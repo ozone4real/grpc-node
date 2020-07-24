@@ -8,9 +8,32 @@ const super_heroes_proto =  grpc.loadPackageDefinition(packageDefinition).super_
 
 const client = new super_heroes_proto.SuperHeroes("0.0.0.0:5000", grpc.credentials.createInsecure())
 
-const [ name, ...powers ] = process.argv.slice(2)
+const request = process.argv[2]
+const args = process.argv.slice(3)
 
-client.addHero({name, powers}, (err, res) => {
-  if(err) return console.log(err)
-  console.log(res)
-})
+const apis = {
+  addHero() {
+    const { name, powers } = args
+    client.addHero({name, powers}, (err, res) => {
+      if(err) return console.log(err)
+      console.log(res)
+    })
+  },
+
+  getHero() {
+    const id = args[0]
+    client.getHero({ id }, (err, res) => {
+      if(err) return console.log(err)
+      console.log(res)
+    })
+  },
+
+  getAllHeroes() {
+    client.getAllHeroes(null, (err, res) => {
+      if(err) return console.log(err)
+      console.log(res)
+    })
+  }
+}
+
+apis[request]()

@@ -32,14 +32,26 @@ const validateHero = (hero) => {
 
 
 const addHero = (call, callback) => {
-  const error = validateHero(call.request)
+  const hero = call.request
+  const error = validateHero(hero)
   if(error) return callback(null, { error })
-  heroes.push(call.request)
+  hero.id = heroes.length + 1
+  heroes.push(hero)
   fs.writeFileSync(DB_PATH, JSON.stringify(heroes))
-  callback(null, { hero: call.request })
+  callback(null, { hero })
 }
 
-server.addService(super_heroes_proto.SuperHeroes.service, { addHero })
+const getHero = (call, callback) => {
+  const hero = heroes.find((h) => h.id === call.request.id)
+  callback(null, { hero })
+}
+
+const getAllHeroes = (_, callback) => {
+  console.log(heroes)
+  callback(null, { heroes })
+}
+
+server.addService(super_heroes_proto.SuperHeroes.service, { addHero, getHero, getAllHeroes })
 
 server.bind('0.0.0.0:5000', grpc.ServerCredentials.createInsecure())
 

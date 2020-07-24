@@ -3,14 +3,29 @@ package super_heroes;
 
 service SuperHeroes {
   rpc addHero (Hero) returns (HeroRes);
+  rpc getHero (HeroParams) returns (HeroRes);
+  rpc getAllHeroes (Empty) returns (Heroes);
+  rpc streamHeroes(Empty) returns(stream Heroes);
 }
 
 message Hero {
   optional string name = 1;
   repeated string powers = 2;
+  optional int32 id = 3;
 }
 
 message HeroRes {
   optional Hero hero = 1;
   optional string error = 2;
 }
+
+message Heroes {
+  repeated Hero heroes = 1;
+  optional string error = 2;
+}
+
+message HeroParams {
+  required int32 id = 1;
+}
+
+message Empty {}
